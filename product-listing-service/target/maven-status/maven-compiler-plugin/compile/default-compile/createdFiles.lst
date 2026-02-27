@@ -1,8 +1,0 @@
-com/ars/listing/ProductListingApplication.class
-com/ars/listing/model/request/ProductCreateRequest.class
-com/ars/listing/service/impl/ProductServiceImpl.class
-com/ars/listing/service/ProductService.class
-com/ars/listing/entity/Product.class
-com/ars/listing/dto/ProductDto.class
-com/ars/listing/repositories/ProductRepository.class
-com/ars/listing/controller/ProductController.class

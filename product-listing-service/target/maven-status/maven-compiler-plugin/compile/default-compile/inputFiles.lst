@@ -1,8 +1,0 @@
-/Users/a.r.s/Desktop/saga-ms-dev-jpa/product-listing-service/src/main/java/com/ars/listing/repositories/ProductRepository.java
-/Users/a.r.s/Desktop/saga-ms-dev-jpa/product-listing-service/src/main/java/com/ars/listing/ProductListingApplication.java
-/Users/a.r.s/Desktop/saga-ms-dev-jpa/product-listing-service/src/main/java/com/ars/listing/model/request/ProductCreateRequest.java
-/Users/a.r.s/Desktop/saga-ms-dev-jpa/product-listing-service/src/main/java/com/ars/listing/entity/Product.java
-/Users/a.r.s/Desktop/saga-ms-dev-jpa/product-listing-service/src/main/java/com/ars/listing/service/impl/ProductServiceImpl.java
-/Users/a.r.s/Desktop/saga-ms-dev-jpa/product-listing-service/src/main/java/com/ars/listing/service/ProductService.java
-/Users/a.r.s/Desktop/saga-ms-dev-jpa/product-listing-service/src/main/java/com/ars/listing/dto/ProductDto.java
-/Users/a.r.s/Desktop/saga-ms-dev-jpa/product-listing-service/src/main/java/com/ars/listing/controller/ProductController.java
