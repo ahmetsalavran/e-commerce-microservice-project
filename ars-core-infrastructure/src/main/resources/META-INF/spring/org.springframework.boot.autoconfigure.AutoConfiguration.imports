@@ -1,0 +1,2 @@
+com.ars.core.infrastructure.idempotency.config.IdempotencyAutoConfiguration
+com.ars.core.infrastructure.idempotency.WebInfraAutoConfiguration

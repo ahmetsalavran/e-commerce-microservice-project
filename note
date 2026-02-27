@@ -1,0 +1,15 @@
+1-a.r.s@172-2-0-38 ars-common-contract % mvn -U -DskipTests clean install
+
+2-a.r.s@172-2-0-38 product-listing-service % mvn -U -DskipTests clean compile
+
+
+
+docker exec -it saga-ms-dev-jpa-kafka-1 bash -lc \
+'kafka-console-consumer --bootstrap-server localhost:9092 --topic inventory.rejected'
+
+
+docker exec -it saga-ms-dev-jpa-kafka-1 bash -lc \
+'kafka-console-consumer --bootstrap-server localhost:9092 --topic inventory.confirmed'
+
+
+
