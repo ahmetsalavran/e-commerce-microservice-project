@@ -4,12 +4,16 @@ import com.ars.contract.catalog.ProductPriceDto;
 import com.ars.listing.dto.ProductDto;
 import com.ars.listing.model.request.ProductCreateRequest;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface ProductService {
     List<ProductDto> productList();
 
     void createProduct(ProductCreateRequest request);
 
-    List<ProductPriceDto> getProductPrices(List<Long> productIds);
+    Map<Long, BigDecimal> getProductPrices(List<Long> ids);
 }
+
+

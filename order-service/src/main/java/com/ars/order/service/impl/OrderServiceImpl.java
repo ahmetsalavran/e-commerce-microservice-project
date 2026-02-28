@@ -128,25 +128,15 @@ public class OrderServiceImpl implements OrderService {
 
         GetProductPricesRequest request = new GetProductPricesRequest(productIds);
 
-        List<ProductPriceDto> prices = catalogClient.getProductPrices(request);
 
-        Map<Long, BigDecimal> priceMap = prices.stream()
-                .collect(Collectors.toMap(
-                        ProductPriceDto::productId,
-                        ProductPriceDto::basePrice
-                ));
+        Map<Long, BigDecimal> priceMap = catalogClient.getProductPrices(request);
 
-        // 2️⃣ Total hesapla
         BigDecimal total = BigDecimal.ZERO;
-
         for (OrderItem item : order.getItems()) {
-
             BigDecimal unitPrice = priceMap.get(item.getProductId());
-
             if (unitPrice == null) {
                 throw new IllegalStateException("Price not found for productId=" + item.getProductId());
             }
-
             BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(item.getQty()));
             total = total.add(lineTotal);
         }
@@ -157,7 +147,6 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.saveAndFlush(order);
 
-        // 4️⃣ Event üret
         List<OrderItemDto> items = order.getItems().stream()
                 .map(i -> new OrderItemDto(i.getProductId(), i.getQty()))
                 .toList();

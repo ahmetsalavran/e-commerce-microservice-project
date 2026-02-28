@@ -1,6 +1,7 @@
 package com.ars.listing.service.impl;
 
 import com.ars.contract.catalog.ProductPriceDto;
+import com.ars.contract.catalog.ProductPriceProjection;
 import com.ars.listing.dto.ProductDto;
 import com.ars.listing.entity.Product;
 import com.ars.listing.model.request.ProductCreateRequest;
@@ -9,8 +10,12 @@ import com.ars.listing.service.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,16 +47,17 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
     }
 
-    @Override
-    public List<ProductPriceDto> getProductPrices(List<Long> productIds) {
-        return productRepository.findByProductIdIn(productIds)
-                .stream()
-                .map(p -> {
-                    return new ProductPriceDto(p.getProductId(),p.getBasePrice());
-                })
-                .toList();
-    }
 
+    @Override
+    public Map<Long, BigDecimal> getProductPrices(List<Long> productIds) {
+
+        return productRepository.findPricesByProductIdIn(productIds)
+                .stream()
+                .collect(Collectors.toMap(
+                        ProductPriceProjection::getProductId,
+                        ProductPriceProjection::getBasePrice
+                ));
+    }
 
     private ProductDto toDto(Product product) {
         ProductDto dto = new ProductDto();
