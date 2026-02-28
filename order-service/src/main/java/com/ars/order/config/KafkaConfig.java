@@ -1,6 +1,6 @@
 package com.ars.order.config;
 
-import com.ars.order.models.eventModels.InventoryRejectedEvent;
+import com.ars.contract.messaging.events.InventoryRejectedEvent;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

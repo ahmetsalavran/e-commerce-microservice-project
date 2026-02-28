@@ -1,4 +1,4 @@
-package com.ars.order.models.eventModels;
+package com.ars.contract.messaging.events;
 
 import java.time.OffsetDateTime;
 import java.util.List;

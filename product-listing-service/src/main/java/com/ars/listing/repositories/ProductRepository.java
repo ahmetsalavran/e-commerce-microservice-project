@@ -1,6 +1,5 @@
 package com.ars.listing.repositories;
 
-import com.ars.contract.catalog.ProductPriceProjection;
 import com.ars.listing.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

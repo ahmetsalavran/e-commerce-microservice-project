@@ -19,10 +19,15 @@ spring:
   kafka:
     bootstrap-servers: localhost:29092
 
+clients:
+  catalog:
+    url: ${CLIENTS_CATALOG_URL:http://localhost:8084}
+
 app:
   topics:
-    order-events: order.confirmed
-    inventory-events: inventory.events
+    order-confirmed: order.confirmed
+    inventory-confirmed: inventory.confirmed
+    inventory-rejected: inventory.rejected
     payment-events: payment.events
 
   kafka:

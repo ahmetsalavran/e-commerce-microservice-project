@@ -1,6 +1,7 @@
 package com.ars.order.messaging.listener;
 
-import com.ars.order.models.eventModels.InventoryRejectedEvent;
+import com.ars.contract.messaging.Topics;
+import com.ars.contract.messaging.events.InventoryRejectedEvent;
 import com.ars.order.service.OrderCompanseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -14,7 +15,7 @@ public class InventoryRejectedListener {
     private final OrderCompanseService orderCompanseService;
 
     @KafkaListener(
-            topics = "inventory.rejected",
+            topics = "${app.topics.inventory-rejected:" + Topics.INVENTORY_REJECTED + "}",
             containerFactory = "inventoryRejectedListenerFactory"
     )
     public void onMessage(InventoryRejectedEvent event, Acknowledgment ack) {

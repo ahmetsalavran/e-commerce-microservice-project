@@ -8,6 +8,8 @@ import com.ars.inventory.services.inventoryCheck.model.InventoryStrategyKey;
 import com.ars.inventory.services.inventoryCheck.model.StrategyCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public class PartialOkButNotZeroStrategy implements InventoryStrategy {
      * Herhangi bir üründe 1 bile düşemezsek BusinessRejectException fırlatırız -> rollback -> hiçbir şey düşülmez.
      */
     @Override
+    @Transactional(propagation = Propagation.MANDATORY)
     public DeductResult deduct(StrategyCommand command) {
 
         // 1) Stable lock order: deadlock riskini azaltır

@@ -1,9 +1,9 @@
 package com.ars.inventory.services.impl;
 
 import com.ars.core.infrastructure.idempotency.repo.ProcessedEventRepository;
+import com.ars.contract.messaging.events.OrderConfirmedEvent;
 import com.ars.inventory.messaging.inner.OutboxCreatedEvent;
 import com.ars.inventory.messaging.model.InventoryEventType;
-import com.ars.inventory.models.OrderConfirmedEvent;
 import com.ars.inventory.models.entities.OutboxEvent;
 import com.ars.inventory.repositories.OutboxEventRepository;
 import com.ars.inventory.services.InventoryService;
@@ -45,7 +45,6 @@ public class InventoryServiceImpl implements InventoryService {
   )
   @Transactional
   public void handle(OrderConfirmedEvent event, Runnable ackAfterCommit) {
-
     if (IdempotencyContext.isDuplicate()) {
       log.info("Duplicate event skipped. eventId={} orderId={}", event.eventId(), event.orderId());
 

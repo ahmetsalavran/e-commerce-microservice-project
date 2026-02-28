@@ -1,6 +1,6 @@
 package com.ars.inventory.config;
 
-import com.ars.inventory.models.OrderConfirmedEvent;
+import com.ars.contract.messaging.events.OrderConfirmedEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;

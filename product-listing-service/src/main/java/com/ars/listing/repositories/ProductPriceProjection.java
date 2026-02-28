@@ -1,4 +1,4 @@
-package com.ars.contract.catalog;
+package com.ars.listing.repositories;
 
 import java.math.BigDecimal;
 

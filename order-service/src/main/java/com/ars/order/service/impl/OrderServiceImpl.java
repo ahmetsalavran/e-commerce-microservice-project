@@ -1,12 +1,11 @@
 package com.ars.order.service.impl;
 
 import com.ars.contract.catalog.GetProductPricesRequest;
-import com.ars.contract.catalog.ProductPriceDto;
+import com.ars.contract.messaging.events.OrderConfirmedEvent;
+import com.ars.contract.messaging.events.OrderItemDto;
 import com.ars.order.feignClients.CatalogClient;
 import com.ars.order.models.entities.*;
 import com.ars.order.models.enums.CancelReason;
-import com.ars.order.models.eventModels.OrderConfirmedEvent;
-import com.ars.order.models.eventModels.OrderItemDto;
 import com.ars.order.models.request.AddToCartRequest;
 import com.ars.order.messaging.inner.OutboxCreatedEvent;
 import com.ars.order.repositories.OutboxEventRepository;
@@ -20,14 +19,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {

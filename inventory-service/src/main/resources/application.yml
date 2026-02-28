@@ -25,7 +25,7 @@ spring:
       missing-topics-fatal: false
 
 app:
-  kafka:
-    topics:
-      order-events: order.confirmed
-      inventory-events: inventory.events
+  topics:
+    order-confirmed: order.confirmed
+    inventory-confirmed: inventory.confirmed
+    inventory-rejected: inventory.rejected

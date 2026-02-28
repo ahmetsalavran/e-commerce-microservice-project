@@ -1,6 +1,7 @@
 package com.ars.inventory.messaging.listeners;
 
-import com.ars.inventory.models.OrderConfirmedEvent;
+import com.ars.contract.messaging.Topics;
+import com.ars.contract.messaging.events.OrderConfirmedEvent;
 import com.ars.inventory.services.InventoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ public class OrderEventsListener {
         this.inventoryService = inventoryService;
     }
 
-    @KafkaListener(topics = "order.confirmed", containerFactory = "orderListenerFactory")
+    @KafkaListener(topics = "${app.topics.order-confirmed:" + Topics.ORDER_CONFIRMED + "}", containerFactory = "orderListenerFactory")
     public void onMessage(OrderConfirmedEvent event, Acknowledgment ack) {
         inventoryService.handle(event, ack::acknowledge);
     }

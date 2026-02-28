@@ -37,13 +37,13 @@ public class AllOrNothingStrategy implements InventoryStrategy {
 
         List<Long> ids = items.stream().map(StrategyCommand.Item::productId).toList();
 
-        // 1) Pessimistic lock: satır kilitliyse BEKLER (senin istediğin davranış)
+        // 1) Pessimistic lock: satır kilitliyse BEKLER
         List<ProductStock> locked = stockRepo.lockByProductIdIn(ids);
 
         /**
          * BEGIN;
          * select * from product_stock where product_id=2 for update; bunu db de çalıştırdığımda commit bekleniyor*/
-        // 2) Eksik satır var mı? (Inventory DB'de row yok)
+
         if (locked.size() != ids.size()) {
             return new DeductResult(command.eventId(), command.orderId(),InventoryStrategyKey.ALL_OR_NOTHING.name(),false,"OUT_OF_STOCK missing_stock_row", List.of(), OffsetDateTime.now());
         }
