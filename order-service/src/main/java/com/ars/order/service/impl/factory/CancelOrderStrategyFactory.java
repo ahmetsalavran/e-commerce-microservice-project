@@ -2,9 +2,9 @@ package com.ars.order.service.impl.factory;
 
 import com.ars.order.models.enums.CancelReason;
 import com.ars.order.service.CancelOrderStrategy;
-import com.ars.order.service.impl.strategy.InventoryFailedCancelStrategy;
-import com.ars.order.service.impl.strategy.TimeoutCancelOrderStrategy;
-import com.ars.order.service.impl.strategy.UserCancelOrderStrategy;
+import com.ars.order.service.impl.strategy.cancel.InventoryFailedCancelStrategy;
+import com.ars.order.service.impl.strategy.cancel.TimeoutCancelOrderStrategy;
+import com.ars.order.service.impl.strategy.cancel.UserCancelOrderStrategy;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -30,4 +30,3 @@ public class CancelOrderStrategyFactory {
         return strategies.get(reason);
     }
 }
-

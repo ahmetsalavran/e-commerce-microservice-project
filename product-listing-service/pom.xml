@@ -12,6 +12,11 @@
   <dependencies>
     <dependency>
       <groupId>com.ars</groupId>
+      <artifactId>ars-core-infrastructure</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.ars</groupId>
       <artifactId>ars-common-contract</artifactId>
     </dependency>
 

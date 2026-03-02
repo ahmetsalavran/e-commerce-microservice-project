@@ -1,11 +1,10 @@
 package com.ars.order.controller;
 
-
-import com.ars.core.infrastructure.idempotency.ApiResponse;
 import com.ars.order.models.enums.CancelReason;
 import com.ars.order.models.request.AddToCartRequest;
 import com.ars.order.models.request.CancelCartRequest;
 import com.ars.order.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,26 +21,19 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @GetMapping("/ok")
-    public String ok() {
-        return " order ok";
-    }
-
     @PostMapping("/addToCart")
-    public Long addToCart(@RequestBody AddToCartRequest request) {
+    public Long addToCart(@Valid @RequestBody AddToCartRequest request) {
         return orderService.addItem(request);
     }
 
     @PostMapping("/cancelCart")
-    public Boolean cancelCart(@RequestBody CancelCartRequest request) {
+    public Boolean cancelCart(@Valid @RequestBody CancelCartRequest request) {
         return orderService.cancelCart(request.getOrderId(), CancelReason.USER_REQUEST);
     }
 
-
     @PostMapping("/confirmCart")
-    public ApiResponse<Void> confirmCart(@RequestBody CancelCartRequest request) {
+    public void confirmCart(@Valid @RequestBody CancelCartRequest request) {
         orderService.confirmCart(request.getOrderId());
-        return ApiResponse.ok(null);
     }
 
 

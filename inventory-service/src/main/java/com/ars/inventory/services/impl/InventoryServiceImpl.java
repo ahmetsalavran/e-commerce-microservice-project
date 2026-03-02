@@ -1,15 +1,17 @@
 package com.ars.inventory.services.impl;
 
 import com.ars.core.infrastructure.idempotency.repo.ProcessedEventRepository;
+import com.ars.core.infrastructure.outbox.entity.OutboxEvent;
+import com.ars.core.infrastructure.outbox.messaging.OutboxCreatedEvent;
+import com.ars.core.infrastructure.outbox.service.OutboxEventService;
+import com.ars.core.infrastructure.tx.AfterCommitExecutor;
+import com.ars.core.infrastructure.web.error.InternalServerException;
 import com.ars.contract.messaging.events.OrderConfirmedEvent;
-import com.ars.inventory.messaging.inner.OutboxCreatedEvent;
+import com.ars.contract.strategy.InventoryStrategy;
 import com.ars.inventory.messaging.model.InventoryEventType;
-import com.ars.inventory.models.entities.OutboxEvent;
-import com.ars.inventory.repositories.OutboxEventRepository;
 import com.ars.inventory.services.InventoryService;
 import com.ars.inventory.services.inventoryCheck.InventoryStrategyDispatcher;
 import com.ars.inventory.services.inventoryCheck.model.DeductResult;
-import com.ars.inventory.services.inventoryCheck.model.InventoryStrategyKey;
 import com.ars.inventory.services.inventoryCheck.model.StrategyCommand;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,13 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.ars.core.infrastructure.idempotency.annotation.Idempotent;
 import com.ars.core.infrastructure.idempotency.context.IdempotencyContext;
-
-import java.time.OffsetDateTime;
 
 @Slf4j
 @Service
@@ -33,7 +31,7 @@ public class InventoryServiceImpl implements InventoryService {
 
   private final InventoryStrategyDispatcher dispatcher;
   private final ProcessedEventRepository processedRepo;
-  private final OutboxEventRepository outboxRepo;
+  private final OutboxEventService outboxEventService;
   private final ObjectMapper objectMapper;
   private final ApplicationEventPublisher eventPublisher;
 
@@ -49,12 +47,12 @@ public class InventoryServiceImpl implements InventoryService {
       log.info("Duplicate event skipped. eventId={} orderId={}", event.eventId(), event.orderId());
 
       if (ackAfterCommit != null) {
-        TransactionSynchronizationManager.registerSynchronization(afterCommit(ackAfterCommit));
+        AfterCommitExecutor.run(ackAfterCommit);
       }
       return;
     }
 
-    InventoryStrategyKey key = InventoryStrategyKey.valueOf(event.orderType());
+    InventoryStrategy key = InventoryStrategy.valueOf(event.orderType());
 
     StrategyCommand cmd = new StrategyCommand(
             event.eventId(),
@@ -66,25 +64,22 @@ public class InventoryServiceImpl implements InventoryService {
 
     DeductResult result = dispatcher.dispatch(key, cmd);
 
-    OutboxEvent saved;
+    String eventType = result.success()
+            ? InventoryEventType.INVENTORY_CONFIRMED.name()
+            : InventoryEventType.INVENTORY_REJECTED.name();
+
+    OutboxEvent saved = outboxEventService.createAndSave(
+            "INVENTORY",
+            event.eventId(),
+            eventType,
+            String.valueOf(event.orderId()),
+            event.orderType(),
+            toJson(result)
+    );
     if (result.success()) {
-      saved = outboxRepo.save(newOutbox(
-              event.eventId(),
-              event.orderId(),
-              event.orderType(),
-              InventoryEventType.INVENTORY_CONFIRMED,
-              toJson(result)
-      ));
       processedRepo.updateStatus(event.eventId(), "DONE");
       log.info("Processed OK eventId={} orderId={} policy={}", event.eventId(), event.orderId(), key);
     } else {
-      saved = outboxRepo.save(newOutbox(
-              event.eventId(),
-              event.orderId(),
-              event.orderType(),
-              InventoryEventType.INVENTORY_REJECTED,
-              toJson(result)
-      ));
       processedRepo.updateStatus(event.eventId(), "REJECTED - LACK OF QUANTITY");
       log.warn("Rejected eventId={} orderId={} policy={} reason={}",
               event.eventId(), event.orderId(), key, result.message());
@@ -93,23 +88,8 @@ public class InventoryServiceImpl implements InventoryService {
     publishOutboxAndMaybeAckAfterCommit(saved, ackAfterCommit);
   }
 
-  private OutboxEvent newOutbox(String eventId, long orderId, String orderType, InventoryEventType eventType, String payload) {
-    OutboxEvent o = new OutboxEvent();
-    o.setAggregateType("INVENTORY");
-    o.setAggregateId(String.valueOf(eventId));
-    o.setEventType(eventType);
-    o.setKey(String.valueOf(orderId));
-    o.setOrderType(String.valueOf(orderType));
-    o.setStatus("NEW");
-    o.setRetries(0);
-    o.setCreatedAt(OffsetDateTime.now());
-    o.setAvailableAt(OffsetDateTime.now());
-    o.setPayload(payload);
-    return o;
-  }
-
   private void publishOutboxAndMaybeAckAfterCommit(OutboxEvent saved, Runnable ackAfterCommit) {
-    TransactionSynchronizationManager.registerSynchronization(afterCommit(() -> {
+    AfterCommitExecutor.run(() -> {
       try {
         eventPublisher.publishEvent(new OutboxCreatedEvent(
                 saved.getId(),
@@ -122,19 +102,14 @@ public class InventoryServiceImpl implements InventoryService {
       } finally {
         if (ackAfterCommit != null) ackAfterCommit.run();   // ✅ null-safe
       }
-    }));
+    });
   }
   private String toJson(Object o) {
     try {
       return objectMapper.writeValueAsString(o);
     } catch (JsonProcessingException e) {
-      throw new RuntimeException("OUTBOX_PAYLOAD_SERIALIZE_FAIL", e);
+      throw new InternalServerException("OUTBOX_PAYLOAD_SERIALIZE_FAIL", e);
     }
   }
 
-  private static TransactionSynchronization afterCommit(Runnable r) {
-    return new TransactionSynchronization() {
-      @Override public void afterCommit() { r.run(); }
-    };
-  }
 }

@@ -22,10 +22,13 @@ spring:
 clients:
   catalog:
     url: ${CLIENTS_CATALOG_URL:http://localhost:8084}
+  user:
+    url: ${CLIENTS_USER_URL:http://localhost:8086}
 
 app:
   topics:
     order-confirmed: order.confirmed
+    order-confirmed-partitioned: order.confirmed.partitioned
     inventory-confirmed: inventory.confirmed
     inventory-rejected: inventory.rejected
     payment-events: payment.events

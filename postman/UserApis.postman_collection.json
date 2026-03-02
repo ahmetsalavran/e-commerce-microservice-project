@@ -1,0 +1,202 @@
+{
+  "info": {
+    "_postman_id": "9b37e7bb-2b0c-4f8a-bc73-3d08aebd8e10",
+    "name": "UserApis",
+    "description": "User service API requests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create User Profile",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerId\": 1001,\n  \"firstName\": \"Ali\",\n  \"lastName\": \"Yilmaz\",\n  \"email\": \"ali.yilmaz@example.com\",\n  \"phone\": \"+905551111111\",\n  \"inventoryStrategy\": \"ALL_OR_NOTHING\",\n  \"paymentStrategy\": \"THIRD_PARTY_THEN_LOCAL\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get User Profile",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update User Profile",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Ali\",\n  \"lastName\": \"Yilmaz\",\n  \"email\": \"ali.yilmaz+updated@example.com\",\n  \"phone\": \"+905551111112\",\n  \"inventoryStrategy\": \"PARTIAL_OK_BUT_NOT_ZERO\",\n  \"paymentStrategy\": \"LOCAL_ONLY\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add Payment Method",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"CARD\",\n  \"providerRef\": \"tok_ali_01\",\n  \"maskedValue\": \"**** **** **** 4242\",\n  \"isDefault\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}/payment-methods",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}",
+            "payment-methods"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List Payment Methods",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}/payment-methods",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}",
+            "payment-methods"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Upsert User Order Info",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orderId\": 50001,\n  \"orderStatus\": \"PENDING\",\n  \"selectedStrategy\": \"ALL_OR_NOTHING\",\n  \"totalPrice\": 249.90\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}/orders",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}",
+            "orders"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List User Orders",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}/orders",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}",
+            "orders"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8086"
+    },
+    {
+      "key": "userId",
+      "value": "1"
+    }
+  ]
+}

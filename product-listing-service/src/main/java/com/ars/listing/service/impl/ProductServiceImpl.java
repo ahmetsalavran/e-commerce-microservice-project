@@ -1,9 +1,9 @@
 package com.ars.listing.service.impl;
 
-import com.ars.listing.dto.ProductDto;
+import com.ars.listing.model.dto.ProductDto;
 import com.ars.listing.entity.Product;
 import com.ars.listing.model.request.ProductCreateRequest;
-import com.ars.listing.repositories.ProductPriceProjection;
+import com.ars.listing.model.ProductPriceProjection;
 import com.ars.listing.repositories.ProductRepository;
 import com.ars.listing.service.ProductService;
 import org.springframework.stereotype.Service;

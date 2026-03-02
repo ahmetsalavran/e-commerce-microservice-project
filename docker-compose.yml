@@ -39,6 +39,7 @@ services:
     command: >
       "
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic order.confirmed --partitions 3 --replication-factor 1 &&
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic order.confirmed.partitioned --partitions 3 --replication-factor 1 &&
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic inventory.confirmed --partitions 3 --replication-factor 1 &&
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic inventory.rejected --partitions 3 --replication-factor 1 &&
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic payment.events --partitions 3 --replication-factor 1
@@ -88,16 +89,16 @@ services:
       - payment-db-data:/var/lib/postgresql/data
       - ./db-init/paymentdb:/docker-entrypoint-initdb.d:ro
 
-  orchestrator-db:
+  user-db:
     image: postgres:15
     environment:
-      POSTGRES_DB: orchestratordb
+      POSTGRES_DB: userdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports: ["5436:5432"]
+    ports: ["5438:5432"]
     volumes:
-      - orchestrator-db-data:/var/lib/postgresql/data
-      - ./db-init/orchestratordb:/docker-entrypoint-initdb.d:ro
+      - user-db-data:/var/lib/postgresql/data
+      - ./db-init/userdb:/docker-entrypoint-initdb.d:ro
 
   product-listing-service:
     build: ./product-listing-service
@@ -127,6 +128,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       CLIENTS_CATALOG_URL: http://product-listing-service:8080
+      CLIENTS_USER_URL: http://user-service:8086
     ports: ["8082:8080"]
     depends_on: [order-db, kafka]
 
@@ -140,19 +142,18 @@ services:
     ports: ["8083:8080"]
     depends_on: [payment-db, kafka]
 
-  orchestrator-service:
-    build: ./orchestrator-service
+  user-service:
+    build: ./user-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://orchestrator-db:5432/orchestratordb
+      SPRING_DATASOURCE_URL: jdbc:postgresql://user-db:5432/userdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-    ports: ["8085:8080"]
-    depends_on: [orchestrator-db, kafka]
+    ports: ["8086:8086"]
+    depends_on: [user-db]
 
 volumes:
   listing-db-data:
   inventory-db-data:
   order-db-data:
   payment-db-data:
-  orchestrator-db-data:
+  user-db-data:

@@ -1,5 +1,7 @@
 package com.ars.order.models.entities;
 
+import com.ars.contract.strategy.InventoryStrategy;
+import com.ars.contract.strategy.PaymentStrategy;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,7 +36,11 @@ public class OrdersCart {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
-    private InventoryStrategyKey orderType;
+    private InventoryStrategy orderType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_strategy", nullable = false, length = 40)
+    private PaymentStrategy paymentStrategy;
 
     @OneToMany(
             mappedBy = "order",

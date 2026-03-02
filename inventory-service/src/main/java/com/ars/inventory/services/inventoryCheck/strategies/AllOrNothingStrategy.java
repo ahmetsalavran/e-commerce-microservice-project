@@ -1,10 +1,9 @@
 package com.ars.inventory.services.inventoryCheck.strategies;
 
+import com.ars.contract.strategy.InventoryStrategy;
 import com.ars.inventory.models.entities.ProductStock;
-import com.ars.inventory.repositories.ProductStockRepository;
-import com.ars.inventory.services.inventoryCheck.InventoryStrategy;
+import com.ars.inventory.repository.ProductStockRepository;
 import com.ars.inventory.services.inventoryCheck.model.DeductResult;
-import com.ars.inventory.services.inventoryCheck.model.InventoryStrategyKey;
 import com.ars.inventory.services.inventoryCheck.model.StrategyCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,13 +16,13 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class AllOrNothingStrategy implements InventoryStrategy {
+public class AllOrNothingStrategy implements com.ars.inventory.services.inventoryCheck.InventoryStrategy {
 
     private final ProductStockRepository stockRepo;
 
     @Override
-    public InventoryStrategyKey key() {
-        return InventoryStrategyKey.ALL_OR_NOTHING;
+    public InventoryStrategy key() {
+        return InventoryStrategy.ALL_OR_NOTHING;
     }
 
     @Override
@@ -45,7 +44,7 @@ public class AllOrNothingStrategy implements InventoryStrategy {
          * select * from product_stock where product_id=2 for update; bunu db de çalıştırdığımda commit bekleniyor*/
 
         if (locked.size() != ids.size()) {
-            return new DeductResult(command.eventId(), command.orderId(),InventoryStrategyKey.ALL_OR_NOTHING.name(),false,"OUT_OF_STOCK missing_stock_row", List.of(), OffsetDateTime.now());
+            return new DeductResult(command.eventId(), command.orderId(), InventoryStrategy.ALL_OR_NOTHING.name(), false, "OUT_OF_STOCK missing_stock_row", List.of(), OffsetDateTime.now());
         }
 
         Map<Long, Integer> avail = locked.stream()
@@ -55,7 +54,7 @@ public class AllOrNothingStrategy implements InventoryStrategy {
         for (var item : items) {
             int a = avail.getOrDefault(item.productId(), 0);
             if (a < item.qty()) {
-                return new DeductResult(command.eventId(), command.orderId(),InventoryStrategyKey.ALL_OR_NOTHING.name(),false,"OUT_OF_STOCK productId=" + item.productId() + " qty=" + item.qty(), List.of(), OffsetDateTime.now());
+                return new DeductResult(command.eventId(), command.orderId(), InventoryStrategy.ALL_OR_NOTHING.name(), false, "OUT_OF_STOCK productId=" + item.productId() + " qty=" + item.qty(), List.of(), OffsetDateTime.now());
 
             }
         }
@@ -66,12 +65,12 @@ public class AllOrNothingStrategy implements InventoryStrategy {
             int updated = stockRepo.tryDeduct(item.productId(), item.qty());
             if (updated == 0) {
                 // lock altında beklemiyoruz ama safety: rare race / missing row
-                return new DeductResult(command.eventId(), command.orderId(),InventoryStrategyKey.ALL_OR_NOTHING.name(),false,"OUT_OF_STOCK productId=" + item.productId() + " qty=" + item.qty(), List.of(), OffsetDateTime.now());
+                return new DeductResult(command.eventId(), command.orderId(), InventoryStrategy.ALL_OR_NOTHING.name(), false, "OUT_OF_STOCK productId=" + item.productId() + " qty=" + item.qty(), List.of(), OffsetDateTime.now());
             }
             deducted.add(new DeductResult.ItemDeducted(item.productId(), item.qty(), item.qty()));
         }
 
-        return new DeductResult(command.eventId(), command.orderId(),InventoryStrategyKey.ALL_OR_NOTHING.name(),true,"Itemler stock dan düşüldü", deducted, OffsetDateTime.now());
+        return new DeductResult(command.eventId(), command.orderId(), InventoryStrategy.ALL_OR_NOTHING.name(), true, "Itemler stock dan düşüldü", deducted, OffsetDateTime.now());
 
     }
 }

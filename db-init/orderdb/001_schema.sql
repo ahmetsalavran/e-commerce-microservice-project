@@ -2,5 +2,6 @@ CREATE TABLE orders (
   order_id UUID PRIMARY KEY,
   customer_id VARCHAR(64) NOT NULL,
   status VARCHAR(32) NOT NULL,
+  payment_strategy VARCHAR(40) NOT NULL DEFAULT 'THIRD_PARTY_THEN_LOCAL',
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );

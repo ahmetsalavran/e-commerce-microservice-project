@@ -1,6 +1,6 @@
 package com.ars.listing.service;
 
-import com.ars.listing.dto.ProductDto;
+import com.ars.listing.model.dto.ProductDto;
 import com.ars.listing.model.request.ProductCreateRequest;
 
 import java.math.BigDecimal;

@@ -1,8 +1,9 @@
 package com.ars.inventory.messaging.publishers;
 
 import com.ars.contract.messaging.Topics;
-import com.ars.inventory.messaging.model.InventoryEventType;
-import com.ars.inventory.repositories.OutboxEventRepository;
+import com.ars.core.infrastructure.outbox.messaging.OutboxJob;
+import com.ars.core.infrastructure.outbox.repo.OutboxEventRepository;
+import com.ars.core.infrastructure.outbox.runtime.OutboxJobPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class OutboxPublisherService {
+public class OutboxPublisherService implements OutboxJobPublisher {
     private final OutboxEventRepository repo;
     private final KafkaTemplate<String, String> kafkaTemplate;
     @Value("${app.topics.inventory-confirmed:" + Topics.INVENTORY_CONFIRMED + "}")
@@ -21,6 +22,7 @@ public class OutboxPublisherService {
     private String inventoryRejectedTopic;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Override
     public void publishFastPath(OutboxJob job) {
         try {
             kafkaTemplate
@@ -33,10 +35,11 @@ public class OutboxPublisherService {
         }
     }
 
-    private String topicOf(InventoryEventType eventType) {
+    private String topicOf(String eventType) {
         return switch (eventType) {
-            case INVENTORY_CONFIRMED -> inventoryConfirmedTopic;
-            case INVENTORY_REJECTED -> inventoryRejectedTopic;
+            case "INVENTORY_CONFIRMED" -> inventoryConfirmedTopic;
+            case "INVENTORY_REJECTED" -> inventoryRejectedTopic;
+            default -> throw new IllegalArgumentException("Unknown eventType=" + eventType);
         };
     }
 }

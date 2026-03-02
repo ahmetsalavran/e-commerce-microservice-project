@@ -1,10 +1,9 @@
 package com.ars.inventory.services.inventoryCheck.strategies;
 
-import com.ars.inventory.exceptions.BusinessRejectException;
-import com.ars.inventory.repositories.ProductStockRepository;
-import com.ars.inventory.services.inventoryCheck.InventoryStrategy;
+import com.ars.contract.strategy.InventoryStrategy;
+import com.ars.core.infrastructure.web.error.BusinessRejectException;
+import com.ars.inventory.repository.ProductStockRepository;
 import com.ars.inventory.services.inventoryCheck.model.DeductResult;
-import com.ars.inventory.services.inventoryCheck.model.InventoryStrategyKey;
 import com.ars.inventory.services.inventoryCheck.model.StrategyCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,13 +19,13 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class PartialOkButNotZeroStrategy implements InventoryStrategy {
+public class PartialOkButNotZeroStrategy implements com.ars.inventory.services.inventoryCheck.InventoryStrategy {
 
     private final ProductStockRepository stockRepo;
 
     @Override
-    public InventoryStrategyKey key() {
-        return InventoryStrategyKey.PARTIAL_OK_BUT_NOT_ZERO;
+    public InventoryStrategy key() {
+        return InventoryStrategy.PARTIAL_OK_BUT_NOT_ZERO;
     }
 
     /**
@@ -80,7 +79,7 @@ public class PartialOkButNotZeroStrategy implements InventoryStrategy {
 
             deducted.add(new DeductResult.ItemDeducted(item.productId(), requested, actual));
         }
-        return new DeductResult(command.eventId(), command.orderId(),InventoryStrategyKey.PARTIAL_OK_BUT_NOT_ZERO.name(),true,"Itemler stock dan düşüldü", List.of(), OffsetDateTime.now());
+        return new DeductResult(command.eventId(), command.orderId(), InventoryStrategy.PARTIAL_OK_BUT_NOT_ZERO.name(), true, "Itemler stock dan düşüldü", List.of(), OffsetDateTime.now());
     }
 
     /**

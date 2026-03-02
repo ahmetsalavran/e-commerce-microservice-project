@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableFeignClients
 @EntityScan("com.ars.order.models")
-@EnableJpaRepositories(basePackageClasses = com.ars.order.repositories.OrderRepository.class)
+@EnableJpaRepositories(basePackageClasses = com.ars.order.repository.OrderRepository.class)
  public class OrderApplication {
   public static void main(String[] args) {
     SpringApplication.run(OrderApplication.class, args);

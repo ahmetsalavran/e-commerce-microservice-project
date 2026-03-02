@@ -1,7 +1,7 @@
 package com.ars.listing.controller;
 
 import com.ars.contract.catalog.GetProductPricesRequest;
-import com.ars.listing.dto.ProductDto;
+import com.ars.listing.model.dto.ProductDto;
 import com.ars.listing.model.request.ProductCreateRequest;
 import com.ars.listing.service.ProductService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,11 +25,6 @@ public class ProductController {
     @GetMapping("/products")
     public List<ProductDto> products() {
         return productService.productList();
-    }
-
-    @GetMapping("/ok")
-    public String ok() {
-        return "ok";
     }
 
     @PostMapping("/products")
