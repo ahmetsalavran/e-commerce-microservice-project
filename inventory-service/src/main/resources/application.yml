@@ -30,3 +30,7 @@ app:
     order-confirmed-partitioned: order.confirmed.partitioned
     inventory-confirmed: inventory.confirmed
     inventory-rejected: inventory.rejected
+
+clients:
+  catalog:
+    url: ${CLIENTS_CATALOG_URL:http://localhost:8084}

@@ -36,7 +36,7 @@ public class SingleOrderConfirmPublishStrategy implements OrderConfirmPublishStr
     }
 
     @Override
-    public void publish(OrdersCart order, List<OrderItemDto> items, BigDecimal total) {
+    public void publish(OrdersCart order, List<OrderItemDto> items) {
         try {
             OrderConfirmedEvent event = new OrderConfirmedEvent(
                     UUID.randomUUID().toString(),
@@ -45,7 +45,7 @@ public class SingleOrderConfirmPublishStrategy implements OrderConfirmPublishStr
                     Instant.now(),
                     order.getOrderType().toString(),
                     items,
-                    total
+                    BigDecimal.ZERO
             );
 
             OutboxEvent saved = outboxEventService.createAndSave(
@@ -64,7 +64,7 @@ public class SingleOrderConfirmPublishStrategy implements OrderConfirmPublishStr
                     saved.getPayload()
             ));
         } catch (JsonProcessingException e) {
-            throw new InternalServerException("Failed to serialize OrderConfirmedEvent", e);
+            throw new InternalServerException("Sipariş onay event'i serileştirilemedi.", e);
         }
     }
 }

@@ -7,16 +7,16 @@ public final class OrderStatusRules {
 
     public static void requireCanConfirm(OrderStatus status) {
         if (status != OrderStatus.DRAFT) {
-            throw new IllegalStateException("Only DRAFT order can be confirmed. status=" + status);
+            throw new IllegalStateException("Sadece DRAFT durumundaki sipariş onaylanabilir. durum=" + status);
         }
     }
 
     public static void requireCanCancel(OrderStatus status) {
         if (status == OrderStatus.CANCELLED) {
-            throw new IllegalStateException("Order already cancelled");
+            throw new IllegalStateException("Sipariş zaten iptal edilmiş.");
         }
         if (status == OrderStatus.CONFIRMED) {
-            throw new IllegalStateException("Confirmed order cannot be cancelled");
+            throw new IllegalStateException("Onaylanan sipariş iptal edilemez.");
         }
     }
 }

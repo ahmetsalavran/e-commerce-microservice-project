@@ -1,18 +1,17 @@
 package com.ars.order.models.entities;
 
+import com.ars.core.infrastructure.persistence.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.OffsetDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor()//access = AccessLevel.PROTECTED
 @Entity
 @Table(name = "order_items")
-public class OrderItem {
+public class OrderItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,10 +31,4 @@ public class OrderItem {
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
     private OrdersCart order;
-
-    @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private OffsetDateTime updatedAt;
 }

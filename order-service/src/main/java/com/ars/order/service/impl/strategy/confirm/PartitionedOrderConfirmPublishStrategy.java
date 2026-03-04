@@ -38,7 +38,7 @@ public class PartitionedOrderConfirmPublishStrategy implements OrderConfirmPubli
     }
 
     @Override
-    public void publish(OrdersCart order, List<OrderItemDto> items, BigDecimal total) {
+    public void publish(OrdersCart order, List<OrderItemDto> items) {
         try {
             String batchId = UUID.randomUUID().toString();
             List<List<OrderItemDto>> segments = splitByProductRange(items, PARTITIONED_SEGMENT_COUNT);
@@ -48,7 +48,6 @@ public class PartitionedOrderConfirmPublishStrategy implements OrderConfirmPubli
                 if (segmentItems.isEmpty()) {
                     continue;
                 }
-
                 OrderConfirmedPartitionedEvent event = new OrderConfirmedPartitionedEvent(
                         batchId + "-s" + segmentNo,
                         batchId,
@@ -59,7 +58,7 @@ public class PartitionedOrderConfirmPublishStrategy implements OrderConfirmPubli
                         Instant.now(),
                         order.getOrderType().toString(),
                         segmentItems,
-                        total
+                        BigDecimal.ZERO
                 );
 
                 OutboxEvent saved = outboxEventService.createAndSave(
@@ -79,7 +78,7 @@ public class PartitionedOrderConfirmPublishStrategy implements OrderConfirmPubli
                 ));
             }
         } catch (JsonProcessingException e) {
-            throw new InternalServerException("Failed to serialize OrderConfirmedPartitionedEvent", e);
+            throw new InternalServerException("Parçalı sipariş onay event'i serileştirilemedi.", e);
         }
     }
 
@@ -104,4 +103,5 @@ public class PartitionedOrderConfirmPublishStrategy implements OrderConfirmPubli
         }
         return 2;
     }
+
 }

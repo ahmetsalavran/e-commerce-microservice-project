@@ -6,8 +6,6 @@ import com.ars.order.repository.OrderRepository;
 import com.ars.order.service.CancelOrderStrategy;
 import com.ars.order.models.domain.OrderStatusRules;
 
-import java.time.OffsetDateTime;
-
 public abstract class AbstractCancelOrderStrategy
         implements CancelOrderStrategy {
 
@@ -28,7 +26,6 @@ public abstract class AbstractCancelOrderStrategy
     protected abstract void doCancel(OrdersCart order);
 
     protected void afterCancel(OrdersCart order) {
-        order.setUpdatedAt(OffsetDateTime.now());
         orderRepository.save(order);
     }
 }

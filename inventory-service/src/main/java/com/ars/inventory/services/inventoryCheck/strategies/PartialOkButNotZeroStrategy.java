@@ -54,7 +54,7 @@ public class PartialOkButNotZeroStrategy implements com.ars.inventory.services.i
         for (var item : items) {
             int available = availableMap.getOrDefault(item.productId(), 0);
             if (available <= 0) {
-                throw new BusinessRejectException("NOT_ZERO_POLICY_FAIL productId=" + item.productId());
+                throw new BusinessRejectException("NOT_ZERO politikası sağlanamadı. productId=" + item.productId());
             }
         }
 
@@ -74,7 +74,7 @@ public class PartialOkButNotZeroStrategy implements com.ars.inventory.services.i
             // En az 1 garanti
             if (actual <= 0) {
                 // Bu noktada 1 bile düşemedik -> tüm order fail
-                throw new BusinessRejectException("NOT_ZERO_POLICY_FAIL productId=" + item.productId());
+                throw new BusinessRejectException("NOT_ZERO politikası sağlanamadı. productId=" + item.productId());
             }
 
             deducted.add(new DeductResult.ItemDeducted(item.productId(), requested, actual));

@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,11 +30,7 @@ public class AllOrNothingStrategy implements com.ars.inventory.services.inventor
     @Override
     @Transactional(propagation = Propagation.MANDATORY)
     public DeductResult deduct(StrategyCommand command) {
-
-        // 0) Aynı productId birden fazla kez geldiyse qty topla (çok kritik)
-        List<StrategyCommand.Item> items = command.items().stream()
-                .sorted(Comparator.comparingLong(StrategyCommand.Item::productId))
-                .toList();
+        List<StrategyCommand.Item> items = command.items();
 
         List<Long> ids = items.stream().map(StrategyCommand.Item::productId).toList();
 

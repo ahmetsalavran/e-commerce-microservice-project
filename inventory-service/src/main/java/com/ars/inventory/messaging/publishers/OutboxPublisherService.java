@@ -39,7 +39,7 @@ public class OutboxPublisherService implements OutboxJobPublisher {
         return switch (eventType) {
             case "INVENTORY_CONFIRMED" -> inventoryConfirmedTopic;
             case "INVENTORY_REJECTED" -> inventoryRejectedTopic;
-            default -> throw new IllegalArgumentException("Unknown eventType=" + eventType);
+            default -> throw new IllegalArgumentException("Bilinmeyen eventType=" + eventType);
         };
     }
 }

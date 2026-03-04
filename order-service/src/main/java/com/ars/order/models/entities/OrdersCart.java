@@ -2,11 +2,11 @@ package com.ars.order.models.entities;
 
 import com.ars.contract.strategy.InventoryStrategy;
 import com.ars.contract.strategy.PaymentStrategy;
+import com.ars.core.infrastructure.persistence.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @NoArgsConstructor
-public class OrdersCart {
+public class OrdersCart extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,11 +51,5 @@ public class OrdersCart {
 
     @Column(name="total_price", precision=19, scale=2, nullable=false)
     private BigDecimal totalPrice = BigDecimal.ZERO;
-
-    @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private OffsetDateTime updatedAt;
 
 }

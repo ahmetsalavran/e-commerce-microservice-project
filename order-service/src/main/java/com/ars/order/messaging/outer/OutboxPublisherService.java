@@ -51,14 +51,14 @@ public class OutboxPublisherService implements OutboxJobPublisher {
         return switch (eventType) {
             case EVENT_TYPE_ORDER_CONFIRMED -> orderConfirmedTopic;
             case EVENT_TYPE_ORDER_CONFIRMED_PARTITIONED -> orderConfirmedPartitionedTopic;
-            default -> throw new IllegalArgumentException("Unknown eventType=" + eventType);
+            default -> throw new IllegalArgumentException("Bilinmeyen eventType=" + eventType);
         };
     }
 
     private int partitionOf(String key) {
         int idx = key.lastIndexOf(':');
         if (idx < 0 || idx == key.length() - 1) {
-            throw new IllegalArgumentException("Partitioned event key must end with ':<partition>' key=" + key);
+            throw new IllegalArgumentException("Parçalı event key değeri ':<partition>' ile bitmeli. key=" + key);
         }
         return Integer.parseInt(key.substring(idx + 1));
     }

@@ -6,8 +6,11 @@ import com.ars.core.infrastructure.outbox.messaging.OutboxCreatedEvent;
 import com.ars.core.infrastructure.outbox.service.OutboxEventService;
 import com.ars.core.infrastructure.tx.AfterCommitExecutor;
 import com.ars.core.infrastructure.web.error.InternalServerException;
+import com.ars.contract.catalog.GetProductPricesRequest;
 import com.ars.contract.messaging.events.OrderConfirmedEvent;
+import com.ars.contract.messaging.events.OrderItemDto;
 import com.ars.contract.strategy.InventoryStrategy;
+import com.ars.inventory.client.CatalogClient;
 import com.ars.inventory.messaging.model.InventoryEventType;
 import com.ars.inventory.services.InventoryService;
 import com.ars.inventory.services.inventoryCheck.InventoryStrategyDispatcher;
@@ -24,6 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ars.core.infrastructure.idempotency.annotation.Idempotent;
 import com.ars.core.infrastructure.idempotency.context.IdempotencyContext;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -34,6 +41,7 @@ public class InventoryServiceImpl implements InventoryService {
   private final OutboxEventService outboxEventService;
   private final ObjectMapper objectMapper;
   private final ApplicationEventPublisher eventPublisher;
+  private final CatalogClient catalogClient;
 
   @Override
   @Idempotent(
@@ -44,7 +52,7 @@ public class InventoryServiceImpl implements InventoryService {
   @Transactional
   public void handle(OrderConfirmedEvent event, Runnable ackAfterCommit) {
     if (IdempotencyContext.isDuplicate()) {
-      log.info("Duplicate event skipped. eventId={} orderId={}", event.eventId(), event.orderId());
+      log.info("Tekrar eden event atlandı. eventId={} orderId={}", event.eventId(), event.orderId());
 
       if (ackAfterCommit != null) {
         AfterCommitExecutor.run(ackAfterCommit);
@@ -63,6 +71,7 @@ public class InventoryServiceImpl implements InventoryService {
     );
 
     DeductResult result = dispatcher.dispatch(key, cmd);
+    BigDecimal calculatedTotal = result.success() ? calculateTotalFromListing(event.items()) : BigDecimal.ZERO;
 
     String eventType = result.success()
             ? InventoryEventType.INVENTORY_CONFIRMED.name()
@@ -78,10 +87,11 @@ public class InventoryServiceImpl implements InventoryService {
     );
     if (result.success()) {
       processedRepo.updateStatus(event.eventId(), "DONE");
-      log.info("Processed OK eventId={} orderId={} policy={}", event.eventId(), event.orderId(), key);
+      log.info("Event başarıyla işlendi. eventId={} orderId={} kural={} totalPrice={}",
+              event.eventId(), event.orderId(), key, calculatedTotal);
     } else {
       processedRepo.updateStatus(event.eventId(), "REJECTED - LACK OF QUANTITY");
-      log.warn("Rejected eventId={} orderId={} policy={} reason={}",
+      log.warn("Event reddedildi. eventId={} orderId={} kural={} neden={}",
               event.eventId(), event.orderId(), key, result.message());
     }
 
@@ -98,7 +108,7 @@ public class InventoryServiceImpl implements InventoryService {
                 saved.getPayload()
         ));
       } catch (Exception e) {
-        log.error("AFTER_COMMIT publish failed. outboxId={} eventType={}", saved.getId(), saved.getEventType(), e);
+        log.error("AFTER_COMMIT publish başarısız. outboxId={} eventType={}", saved.getId(), saved.getEventType(), e);
       } finally {
         if (ackAfterCommit != null) ackAfterCommit.run();   // ✅ null-safe
       }
@@ -108,8 +118,27 @@ public class InventoryServiceImpl implements InventoryService {
     try {
       return objectMapper.writeValueAsString(o);
     } catch (JsonProcessingException e) {
-      throw new InternalServerException("OUTBOX_PAYLOAD_SERIALIZE_FAIL", e);
+      throw new InternalServerException("Outbox payload serileştirilemedi.", e);
     }
+  }
+
+  private BigDecimal calculateTotalFromListing(List<OrderItemDto> items) {
+    List<Long> productIds = items.stream()
+            .map(OrderItemDto::productId)
+            .distinct()
+            .toList();
+
+    Map<Long, BigDecimal> priceMap = catalogClient.getProductPrices(new GetProductPricesRequest(productIds));
+
+    BigDecimal total = BigDecimal.ZERO;
+    for (OrderItemDto item : items) {
+      BigDecimal unitPrice = priceMap.get(item.productId());
+      if (unitPrice == null) {
+        throw new InternalServerException("Inventory toplamı hesaplanamadı. Ürün fiyatı bulunamadı. productId=" + item.productId());
+      }
+      total = total.add(unitPrice.multiply(BigDecimal.valueOf(item.qty())));
+    }
+    return total;
   }
 
 }

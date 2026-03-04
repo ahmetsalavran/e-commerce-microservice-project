@@ -19,8 +19,8 @@ public class InventoryStrategyRegistry {
             com.ars.contract.strategy.InventoryStrategy key = s.key();
             InventoryStrategy prev = map.putIfAbsent(key, s);
             if (prev != null) {
-                throw new IllegalStateException("Duplicate strategy for key=" + key
-                        + " -> " + prev.getClass().getName() + " and " + s.getClass().getName());
+                throw new IllegalStateException("Aynı key için birden fazla strategy var. key=" + key
+                        + " -> " + prev.getClass().getName() + " ve " + s.getClass().getName());
             }
         }
         this.strategies = Map.copyOf(map);
@@ -28,7 +28,7 @@ public class InventoryStrategyRegistry {
 
     public InventoryStrategy getRequired(com.ars.contract.strategy.InventoryStrategy key) {
         InventoryStrategy s = strategies.get(key);
-        if (s == null) throw new IllegalArgumentException("No strategy registered for key=" + key);
+        if (s == null) throw new IllegalArgumentException("Bu key için strategy kayıtlı değil. key=" + key);
         return s;
     }
 

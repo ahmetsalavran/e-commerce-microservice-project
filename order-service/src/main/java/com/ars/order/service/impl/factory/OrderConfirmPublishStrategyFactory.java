@@ -27,7 +27,7 @@ public class OrderConfirmPublishStrategyFactory {
     public OrderConfirmPublishStrategy getRequired(InventoryStrategy strategy) {
         OrderConfirmPublishStrategy publishStrategy = strategies.get(strategy);
         if (publishStrategy == null) {
-            throw new IllegalArgumentException("No publish strategy for orderType=" + strategy);
+            throw new IllegalArgumentException("Bu sipariş tipi için yayın stratejisi bulunamadı: " + strategy);
         }
         return publishStrategy;
     }

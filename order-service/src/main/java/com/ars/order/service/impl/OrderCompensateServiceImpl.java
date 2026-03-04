@@ -31,19 +31,19 @@ public class OrderCompensateServiceImpl implements OrderCompensateService {
     )
     public void onInventoryRejected(InventoryRejectedEvent event, Runnable ackAfterCommit) {
         if (IdempotencyContext.isDuplicate()) {
-            log.info("Duplicate event skipped. eventId={} orderId={}", event.eventId(), event.orderId());
+            log.info("Mükerrer event atlandı. eventId={} orderId={}", event.eventId(), event.orderId());
             AfterCommitExecutor.run(ackAfterCommit);
             return;
         }
 
         OrdersCart order = orderRepository.findById(event.orderId())
-                .orElseThrow(() -> new NotFoundException("Order not found. id=" + event.orderId()));
+                .orElseThrow(() -> new NotFoundException("Sipariş bulunamadı. id=" + event.orderId()));
 
         if (order.getStatus() == OrderStatus.PENDING) {
             order.setStatus(OrderStatus.REJECTED);
             orderRepository.save(order);
         }
-        log.warn("Order rejected by inventory. orderId={} reason={}", event.orderId(), event.message());
+        log.warn("Sipariş envanter tarafından reddedildi. orderId={} neden={}", event.orderId(), event.message());
 
         AfterCommitExecutor.run(ackAfterCommit);
     }
