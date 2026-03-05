@@ -25,6 +25,20 @@ public interface ProductStockRepository extends JpaRepository<ProductStock, Long
     int tryDeduct(@Param("productId") long productId,
                   @Param("qty") int qty);
 
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("""
+        update ProductStock s
+           set s.available = s.available - :qty,
+               s.version = s.version + 1,
+               s.updatedAt = CURRENT_TIMESTAMP
+         where s.productId = :productId
+           and s.available >= :qty
+           and s.version = :expectedVersion
+    """)
+    int tryDeductWithVersion(@Param("productId") long productId,
+                             @Param("qty") int qty,
+                             @Param("expectedVersion") long expectedVersion);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select s from ProductStock s where s.productId in :ids")
     List<ProductStock> lockByProductIdIn(@Param("ids") List<Long> ids);

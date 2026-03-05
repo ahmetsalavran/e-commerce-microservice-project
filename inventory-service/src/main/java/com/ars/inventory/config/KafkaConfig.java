@@ -26,7 +26,7 @@ public class KafkaConfig {
     private String bootstrapServers;
 
     @Value("${spring.kafka.consumer.group-id:inventory-dev-1}")
-    private String groupId;
+    private String groupId;//TODO BURDA İKİ BEAN ICIN TANIMLAMA YAPILMIŞ SIKINTI OLUR MU ?
 
     /**
      * ORDER EVENT consumer factory (JSON -> POJO)
@@ -108,4 +108,5 @@ public class KafkaConfig {
         f.setCommonErrorHandler(new DefaultErrorHandler(new FixedBackOff(1000L, 3)));
         return f;
     }
+
 }

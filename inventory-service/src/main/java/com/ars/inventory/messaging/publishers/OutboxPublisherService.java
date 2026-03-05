@@ -4,12 +4,15 @@ import com.ars.contract.messaging.Topics;
 import com.ars.core.infrastructure.outbox.messaging.OutboxJob;
 import com.ars.core.infrastructure.outbox.repo.OutboxEventRepository;
 import com.ars.core.infrastructure.outbox.runtime.OutboxJobPublisher;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +23,15 @@ public class OutboxPublisherService implements OutboxJobPublisher {
     private String inventoryConfirmedTopic;
     @Value("${app.topics.inventory-rejected:" + Topics.INVENTORY_REJECTED + "}")
     private String inventoryRejectedTopic;
+    private Map<String, String> topicByEventType;
+
+    @PostConstruct
+    void initTopics() {
+        this.topicByEventType = Map.of(
+                "INVENTORY_CONFIRMED", inventoryConfirmedTopic,
+                "INVENTORY_REJECTED", inventoryRejectedTopic
+        );
+    }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
@@ -36,10 +48,10 @@ public class OutboxPublisherService implements OutboxJobPublisher {
     }
 
     private String topicOf(String eventType) {
-        return switch (eventType) {
-            case "INVENTORY_CONFIRMED" -> inventoryConfirmedTopic;
-            case "INVENTORY_REJECTED" -> inventoryRejectedTopic;
-            default -> throw new IllegalArgumentException("Bilinmeyen eventType=" + eventType);
-        };
+        String topic = topicByEventType.get(eventType);
+        if (topic == null) {
+            throw new IllegalArgumentException("Bilinmeyen eventType=" + eventType);
+        }
+        return topic;
     }
 }

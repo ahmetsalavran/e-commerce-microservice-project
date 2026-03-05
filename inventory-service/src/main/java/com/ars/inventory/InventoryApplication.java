@@ -1,5 +1,11 @@
 package com.ars.inventory;
 
+import com.ars.core.infrastructure.idempotency.entity.ProcessedEvent;
+import com.ars.core.infrastructure.idempotency.repo.ProcessedEventRepository;
+import com.ars.core.infrastructure.outbox.entity.OutboxEvent;
+import com.ars.core.infrastructure.outbox.repo.OutboxEventRepository;
+import com.ars.inventory.models.entities.ProductStock;
+import com.ars.inventory.repository.ProductStockRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -8,8 +14,16 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableFeignClients
-@EnableJpaRepositories(basePackages = "com.ars.inventory.repository")
-@EntityScan(basePackages = "com.ars.inventory.models.entities")
+@EnableJpaRepositories(basePackageClasses = {
+        ProductStockRepository.class,
+        OutboxEventRepository.class,
+        ProcessedEventRepository.class
+})
+@EntityScan(basePackageClasses = {
+        ProductStock.class,
+        OutboxEvent.class,
+        ProcessedEvent.class
+})
 public class InventoryApplication {
   public static void main(String[] args) {
     SpringApplication.run(InventoryApplication.class, args);

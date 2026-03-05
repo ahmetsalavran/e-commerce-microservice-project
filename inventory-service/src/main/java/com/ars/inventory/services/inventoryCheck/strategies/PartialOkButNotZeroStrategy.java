@@ -1,7 +1,6 @@
 package com.ars.inventory.services.inventoryCheck.strategies;
 
 import com.ars.contract.strategy.InventoryStrategy;
-import com.ars.core.infrastructure.web.error.BusinessRejectException;
 import com.ars.inventory.repository.ProductStockRepository;
 import com.ars.inventory.services.inventoryCheck.model.DeductResult;
 import com.ars.inventory.services.inventoryCheck.model.StrategyCommand;
@@ -36,7 +35,7 @@ public class PartialOkButNotZeroStrategy implements com.ars.inventory.services.i
      * - DB yarışında tryDeduct 0 dönerse qty'yi 1'e kadar küçültüp tekrar dene.
      *
      * Not: Bu method çağrıldığı transaction içinde çalışır.
-     * Herhangi bir üründe 1 bile düşemezsek BusinessRejectException fırlatırız -> rollback -> hiçbir şey düşülmez.
+     * Herhangi bir üründe 1 bile düşemezsek fail sonucu döneriz.
      */
     @Override
     @Transactional(propagation = Propagation.MANDATORY)
@@ -54,7 +53,15 @@ public class PartialOkButNotZeroStrategy implements com.ars.inventory.services.i
         for (var item : items) {
             int available = availableMap.getOrDefault(item.productId(), 0);
             if (available <= 0) {
-                throw new BusinessRejectException("NOT_ZERO politikası sağlanamadı. productId=" + item.productId());
+                return new DeductResult(
+                        command.eventId(),
+                        command.orderId(),
+                        InventoryStrategy.PARTIAL_OK_BUT_NOT_ZERO.name(),
+                        false,
+                        "NOT_ZERO politikası sağlanamadı. productId=" + item.productId(),
+                        List.of(),
+                        OffsetDateTime.now()
+                );
             }
         }
 
@@ -73,8 +80,15 @@ public class PartialOkButNotZeroStrategy implements com.ars.inventory.services.i
 
             // En az 1 garanti
             if (actual <= 0) {
-                // Bu noktada 1 bile düşemedik -> tüm order fail
-                throw new BusinessRejectException("NOT_ZERO politikası sağlanamadı. productId=" + item.productId());
+                return new DeductResult(
+                        command.eventId(),
+                        command.orderId(),
+                        InventoryStrategy.PARTIAL_OK_BUT_NOT_ZERO.name(),
+                        false,
+                        "NOT_ZERO politikası sağlanamadı. productId=" + item.productId(),
+                        List.of(),
+                        OffsetDateTime.now()
+                );
             }
 
             deducted.add(new DeductResult.ItemDeducted(item.productId(), requested, actual));

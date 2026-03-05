@@ -17,6 +17,12 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Map<HttpStatus, String> STATUS_TEXTS = Map.of(
+            HttpStatus.BAD_REQUEST, "Geçersiz İstek",
+            HttpStatus.NOT_FOUND, "Bulunamadı",
+            HttpStatus.CONFLICT, "Çakışma",
+            HttpStatus.INTERNAL_SERVER_ERROR, "Sunucu Hatası"
+    );
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ApiErrorResponse> handleAppException(AppException ex, HttpServletRequest request) {
@@ -108,12 +114,6 @@ public class GlobalExceptionHandler {
     }
 
     private String durumMetni(HttpStatus status) {
-        return switch (status) {
-            case BAD_REQUEST -> "Geçersiz İstek";
-            case NOT_FOUND -> "Bulunamadı";
-            case CONFLICT -> "Çakışma";
-            case INTERNAL_SERVER_ERROR -> "Sunucu Hatası";
-            default -> "Hata";
-        };
+        return STATUS_TEXTS.getOrDefault(status, "Hata");
     }
 }

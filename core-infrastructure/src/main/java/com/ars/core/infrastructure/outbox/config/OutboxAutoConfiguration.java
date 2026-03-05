@@ -1,6 +1,5 @@
 package com.ars.core.infrastructure.outbox.config;
 
-import com.ars.core.infrastructure.outbox.entity.OutboxEvent;
 import com.ars.core.infrastructure.outbox.repo.OutboxEventRepository;
 import com.ars.core.infrastructure.outbox.runtime.OutboxAfterCommitListener;
 import com.ars.core.infrastructure.outbox.runtime.OutboxJobPublisher;
@@ -11,17 +10,14 @@ import com.ars.core.infrastructure.outbox.service.OutboxEventService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @AutoConfiguration
 @ConditionalOnClass(OutboxEventRepository.class)
-@EntityScan(basePackageClasses = OutboxEvent.class)
-@EnableJpaRepositories(basePackageClasses = OutboxEventRepository.class)
 public class OutboxAutoConfiguration {
 
     @Bean
+    @ConditionalOnBean(OutboxEventRepository.class)
     public OutboxEventService outboxEventService(OutboxEventRepository repository) {
         return new OutboxEventService(repository);
     }

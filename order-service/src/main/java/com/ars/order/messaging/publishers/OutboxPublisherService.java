@@ -1,15 +1,18 @@
-package com.ars.order.messaging.outer;
+package com.ars.order.messaging.publishers;
 
 import com.ars.contract.messaging.Topics;
 import com.ars.core.infrastructure.outbox.messaging.OutboxJob;
 import com.ars.core.infrastructure.outbox.repo.OutboxEventRepository;
 import com.ars.core.infrastructure.outbox.runtime.OutboxJobPublisher;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
 
 
 @Service
@@ -24,6 +27,15 @@ public class OutboxPublisherService implements OutboxJobPublisher {
     private String orderConfirmedTopic;
     @Value("${app.topics.order-confirmed-partitioned:" + Topics.ORDER_CONFIRMED_PARTITIONED + "}")
     private String orderConfirmedPartitionedTopic;
+    private Map<String, String> topicByEventType;
+
+    @PostConstruct
+    void initTopics() {
+        this.topicByEventType = Map.of(
+                EVENT_TYPE_ORDER_CONFIRMED, orderConfirmedTopic,
+                EVENT_TYPE_ORDER_CONFIRMED_PARTITIONED, orderConfirmedPartitionedTopic
+        );
+    }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
@@ -35,7 +47,7 @@ public class OutboxPublisherService implements OutboxJobPublisher {
                         .get();
             } else {
                 kafkaTemplate
-                        .send(topicOf(job.eventType()), job.keyId(), job.payload())
+                        .send(topicByEventType.get(job.eventType()), job.keyId(), job.payload())
                         .get();
             }
 
@@ -44,15 +56,6 @@ public class OutboxPublisherService implements OutboxJobPublisher {
             repo.markFailed(job.outboxRowId());
             throw new RuntimeException(ex);
         }
-    }
-
-
-    private String topicOf(String eventType) {
-        return switch (eventType) {
-            case EVENT_TYPE_ORDER_CONFIRMED -> orderConfirmedTopic;
-            case EVENT_TYPE_ORDER_CONFIRMED_PARTITIONED -> orderConfirmedPartitionedTopic;
-            default -> throw new IllegalArgumentException("Bilinmeyen eventType=" + eventType);
-        };
     }
 
     private int partitionOf(String key) {
