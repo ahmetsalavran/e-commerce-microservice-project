@@ -40,6 +40,7 @@ public class ProductServiceImpl implements ProductService {
         product.setSku(request.getSku());
         product.setName(request.getName());
         product.setBasePrice(request.getBasePrice());
+        product.setAvailable(request.getAvailable() == null ? 1 : request.getAvailable());
         product.setUpdatedAt(OffsetDateTime.now());
         productRepository.save(product);
     }
@@ -56,12 +57,22 @@ public class ProductServiceImpl implements ProductService {
                 ));
     }
 
+    @Override
+    @Transactional
+    public void markAvailableNegative(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return;
+        }
+        productRepository.markAvailableNegative(ids);
+    }
+
     private ProductDto toDto(Product product) {
         ProductDto dto = new ProductDto();
         dto.setProductId(product.getProductId());
         dto.setSku(product.getSku());
         dto.setName(product.getName());
         dto.setBasePrice(product.getBasePrice());
+        dto.setAvailable(product.getAvailable());
         dto.setUpdatedAt(product.getUpdatedAt());
         return dto;
     }

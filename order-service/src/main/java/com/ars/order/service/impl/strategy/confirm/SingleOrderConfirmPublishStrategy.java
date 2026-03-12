@@ -44,6 +44,7 @@ public class SingleOrderConfirmPublishStrategy implements OrderConfirmPublishStr
                     order.getCustomerId(),
                     Instant.now(),
                     order.getOrderType().toString(),
+                    order.getPaymentStrategy(),
                     items,
                     BigDecimal.ZERO
             );

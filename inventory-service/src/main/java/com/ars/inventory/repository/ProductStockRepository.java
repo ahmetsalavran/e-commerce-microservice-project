@@ -52,4 +52,12 @@ public interface ProductStockRepository extends JpaRepository<ProductStock, Long
     """)
     int restore(@Param("productId") long productId,
                 @Param("qty") int qty);
+
+    @Query("""
+        select s.productId
+          from ProductStock s
+         where s.productId in :ids
+           and s.available = 0
+    """)
+    List<Long> findZeroAvailableProductIds(@Param("ids") List<Long> ids);
 }

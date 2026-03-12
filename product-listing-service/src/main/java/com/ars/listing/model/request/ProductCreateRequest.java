@@ -9,6 +9,6 @@ public class ProductCreateRequest {
     private String sku;
     private String name;
     private BigDecimal basePrice;
+    private Integer available;
 }
-
 

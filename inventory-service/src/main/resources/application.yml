@@ -28,7 +28,7 @@ app:
   topics:
     order-confirmed: order.confirmed
     order-confirmed-partitioned: order.confirmed.partitioned
-    inventory-confirmed: inventory.confirmed
+    payment-charge-requested: payment.charge.requested
     inventory-rejected: inventory.rejected
 
 clients:

@@ -19,8 +19,8 @@ import java.util.Map;
 public class OutboxPublisherService implements OutboxJobPublisher {
     private final OutboxEventRepository repo;
     private final KafkaTemplate<String, String> kafkaTemplate;
-    @Value("${app.topics.inventory-confirmed:" + Topics.INVENTORY_CONFIRMED + "}")
-    private String inventoryConfirmedTopic;
+    @Value("${app.topics.payment-charge-requested:" + Topics.PAYMENT_CHARGE_REQUESTED + "}")
+    private String paymentChargeRequestedTopic;
     @Value("${app.topics.inventory-rejected:" + Topics.INVENTORY_REJECTED + "}")
     private String inventoryRejectedTopic;
     private Map<String, String> topicByEventType;
@@ -28,7 +28,7 @@ public class OutboxPublisherService implements OutboxJobPublisher {
     @PostConstruct
     void initTopics() {
         this.topicByEventType = Map.of(
-                "INVENTORY_CONFIRMED", inventoryConfirmedTopic,
+                "PAYMENT_CHARGE_REQUESTED", paymentChargeRequestedTopic,
                 "INVENTORY_REJECTED", inventoryRejectedTopic
         );
     }

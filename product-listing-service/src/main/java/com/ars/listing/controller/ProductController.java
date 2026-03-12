@@ -37,4 +37,9 @@ public class ProductController {
         return productService.getProductPrices(req.productIds());
     }
 
+    @PostMapping("/products/available/mark-negative")
+    public void markAvailableNegative(@RequestBody List<Long> productIds) {
+        productService.markAvailableNegative(productIds);
+    }
+
 }

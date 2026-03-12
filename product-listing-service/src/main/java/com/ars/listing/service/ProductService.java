@@ -13,6 +13,7 @@ public interface ProductService {
     void createProduct(ProductCreateRequest request);
 
     Map<Long, BigDecimal> getProductPrices(List<Long> ids);
-}
 
+    void markAvailableNegative(List<Long> ids);
+}
 

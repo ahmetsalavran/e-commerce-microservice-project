@@ -1,5 +1,7 @@
 package com.ars.contract.messaging.events;
 
+import com.ars.contract.strategy.PaymentStrategy;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
@@ -13,6 +15,7 @@ public record OrderConfirmedPartitionedEvent(
         long customerId,
         Instant createdAt,
         String orderType,
+        PaymentStrategy paymentStrategy,
         List<OrderItemDto> items,
         BigDecimal totalPrice
 ) {

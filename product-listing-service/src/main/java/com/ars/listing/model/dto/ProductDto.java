@@ -11,5 +11,6 @@ public class ProductDto {
     private String sku;
     private String name;
     private BigDecimal basePrice;
+    private Integer available;
     private OffsetDateTime updatedAt;
 }

@@ -27,6 +27,9 @@ public class OutboxPublisherWorker {
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 OutboxJob job = outboxQueue.take();
+                // TODO(multi-pod): publishFastPath oncesi bu job kaydinin DB'de pod'a
+                // ozel sekilde "claim" edildigini garanti edin. Aksi halde farkli podlar
+                // ayni outbox satirini publish etmeye calisabilir (duplicate publish).
                 outboxJobPublisher.publishFastPath(job);
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();

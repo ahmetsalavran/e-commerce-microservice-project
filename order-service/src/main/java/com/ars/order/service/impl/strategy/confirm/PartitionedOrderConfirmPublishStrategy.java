@@ -57,6 +57,7 @@ public class PartitionedOrderConfirmPublishStrategy implements OrderConfirmPubli
                         order.getCustomerId(),
                         Instant.now(),
                         order.getOrderType().toString(),
+                        order.getPaymentStrategy(),
                         segmentItems,
                         BigDecimal.ZERO
                 );

@@ -13,6 +13,11 @@ import java.util.Optional;
 
 public interface OutboxEventRepository extends JpaRepository<OutboxEvent, Long> {
 
+    // TODO(multi-pod): NEW/FAILED kayitlarini dogrudan toplu cekmek yerine
+    // "claim batch" repository metodu ekleyin:
+    // 1) FOR UPDATE SKIP LOCKED ile sinirli batch sec
+    // 2) secilenleri atomik olarak PROCESSING'e cek
+    // 3) yalniz claim eden pod publish etsin
     List<OutboxEvent> findByStatusInOrderByIdAsc(List<String> statuses);
 
     @Modifying

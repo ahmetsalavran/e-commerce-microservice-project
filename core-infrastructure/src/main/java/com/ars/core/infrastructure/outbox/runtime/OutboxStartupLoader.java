@@ -19,6 +19,10 @@ public class OutboxStartupLoader {
 
     @EventListener(ApplicationReadyEvent.class)
     public void load() {
+        // TODO(multi-pod): Bu toplu yukleme multi-pod ortaminda ayni NEW/FAILED kayitlarin
+        // birden fazla pod tarafindan queue'ya alinmasina yol acabilir. Burayi
+        // "claim" mantigina tasiyin (or. FOR UPDATE SKIP LOCKED + NEW->PROCESSING),
+        // veya distributed lock ile tek pod startup yuklemesi yapin.
         List<OutboxEvent> events = outboxEventRepository.findByStatusInOrderByIdAsc(List.of("NEW", "FAILED"));
         events.forEach(event -> outboxQueue.enqueue(new OutboxJob(
                 event.getId(),

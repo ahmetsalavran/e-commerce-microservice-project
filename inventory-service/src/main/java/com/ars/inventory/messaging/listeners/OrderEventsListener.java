@@ -35,6 +35,7 @@ public class OrderEventsListener {
                 event.customerId(),
                 event.createdAt(),
                 event.orderType(),
+                event.paymentStrategy(),
                 event.items(),
                 event.totalPrice()
         );

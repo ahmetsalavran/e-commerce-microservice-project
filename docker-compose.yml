@@ -42,6 +42,7 @@ services:
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic order.confirmed.partitioned --partitions 3 --replication-factor 1 &&
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic inventory.confirmed --partitions 3 --replication-factor 1 &&
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic inventory.rejected --partitions 3 --replication-factor 1 &&
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic inventory.compensate.requested --partitions 3 --replication-factor 1 &&
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic payment.events --partitions 3 --replication-factor 1
       "
 

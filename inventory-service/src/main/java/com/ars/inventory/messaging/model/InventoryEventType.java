@@ -1,6 +1,6 @@
 package com.ars.inventory.messaging.model;
 
 public enum InventoryEventType {
-    INVENTORY_CONFIRMED,
+    PAYMENT_CHARGE_REQUESTED,
     INVENTORY_REJECTED
 }

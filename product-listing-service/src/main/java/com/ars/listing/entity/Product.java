@@ -26,7 +26,9 @@ public class Product {
     @Column(name = "base_price", nullable = false)
     private BigDecimal basePrice;
 
+    @Column(name = "available", nullable = false)
+    private Integer available;
+
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 }
-

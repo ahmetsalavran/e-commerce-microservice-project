@@ -1,10 +1,36 @@
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5435/paymentdb}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
   jpa:
     hibernate:
       ddl-auto: none
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+    consumer:
+      group-id: ${SPRING_KAFKA_CONSUMER_GROUP_ID:payment-dev-1}
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+    listener:
+      ack-mode: manual
+      missing-topics-fatal: false
+
+app:
+  topics:
+    payment-charge-requested: payment.charge.requested
+    inventory-compensate-requested: inventory.compensate.requested
+  payment:
+    cleanup:
+      enabled: ${APP_PAYMENT_CLEANUP_ENABLED:true}
+      cron: ${APP_PAYMENT_CLEANUP_CRON:0 0 3 * * *}
+      zone: ${APP_PAYMENT_CLEANUP_ZONE:Europe/Istanbul}
+      retention-days: ${APP_PAYMENT_CLEANUP_RETENTION_DAYS:14}
+      batch-size: ${APP_PAYMENT_CLEANUP_BATCH_SIZE:1000}
+      max-batches-per-run: ${APP_PAYMENT_CLEANUP_MAX_BATCHES_PER_RUN:200}
+      lock-at-most-for: ${APP_PAYMENT_CLEANUP_LOCK_AT_MOST_FOR:PT30M}
+      lock-at-least-for: ${APP_PAYMENT_CLEANUP_LOCK_AT_LEAST_FOR:PT10S}
+
+clients:
 server:
   port: 8080
