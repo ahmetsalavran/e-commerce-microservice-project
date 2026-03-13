@@ -1,9 +1,9 @@
 package com.ars.inventory;
 
-import com.ars.core.infrastructure.idempotency.entity.ProcessedEvent;
-import com.ars.core.infrastructure.idempotency.repo.ProcessedEventRepository;
-import com.ars.core.infrastructure.outbox.entity.OutboxEvent;
-import com.ars.core.infrastructure.outbox.repo.OutboxEventRepository;
+import com.microservice.infrastructure.idempotency.entity.ProcessedEvent;
+import com.microservice.infrastructure.idempotency.repo.ProcessedEventRepository;
+import com.microservice.infrastructure.outbox.entity.OutboxEvent;
+import com.microservice.infrastructure.outbox.repo.OutboxEventRepository;
 import com.ars.inventory.models.entities.ProductStock;
 import com.ars.inventory.repository.ProductStockRepository;
 import org.springframework.boot.SpringApplication;

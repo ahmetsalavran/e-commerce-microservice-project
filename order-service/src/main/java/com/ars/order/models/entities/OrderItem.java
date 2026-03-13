@@ -1,6 +1,6 @@
 package com.ars.order.models.entities;
 
-import com.ars.core.infrastructure.persistence.BaseEntity;
+import com.microservice.infrastructure.persistence.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

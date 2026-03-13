@@ -1,6 +1,6 @@
 package com.ars.payment.jobs;
 
-import com.ars.core.infrastructure.idempotency.repo.ProcessedEventRepository;
+import com.microservice.infrastructure.idempotency.repo.ProcessedEventRepository;
 import com.ars.payment.repository.PaymentAccountEventRepository;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;

@@ -1,9 +1,9 @@
 package com.ars.order;
 
-import com.ars.core.infrastructure.idempotency.entity.ProcessedEvent;
-import com.ars.core.infrastructure.idempotency.repo.ProcessedEventRepository;
-import com.ars.core.infrastructure.outbox.entity.OutboxEvent;
-import com.ars.core.infrastructure.outbox.repo.OutboxEventRepository;
+import com.microservice.infrastructure.idempotency.entity.ProcessedEvent;
+import com.microservice.infrastructure.idempotency.repo.ProcessedEventRepository;
+import com.microservice.infrastructure.outbox.entity.OutboxEvent;
+import com.microservice.infrastructure.outbox.repo.OutboxEventRepository;
 import com.ars.order.models.entities.OrderItem;
 import com.ars.order.models.entities.OrdersCart;
 import com.ars.order.repository.OrderItemRepository;

@@ -2,7 +2,7 @@ package com.ars.order.models.entities;
 
 import com.ars.contract.strategy.InventoryStrategy;
 import com.ars.contract.strategy.PaymentStrategy;
-import com.ars.core.infrastructure.persistence.BaseEntity;
+import com.microservice.infrastructure.persistence.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

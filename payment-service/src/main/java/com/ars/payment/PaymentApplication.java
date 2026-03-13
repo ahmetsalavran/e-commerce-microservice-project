@@ -1,7 +1,7 @@
 package com.ars.payment;
 
-import com.ars.core.infrastructure.idempotency.entity.ProcessedEvent;
-import com.ars.core.infrastructure.idempotency.repo.ProcessedEventRepository;
+import com.microservice.infrastructure.idempotency.entity.ProcessedEvent;
+import com.microservice.infrastructure.idempotency.repo.ProcessedEventRepository;
 import com.ars.payment.entity.PaymentAccountEvent;
 import com.ars.payment.repository.PaymentAccountEventRepository;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
