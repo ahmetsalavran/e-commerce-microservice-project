@@ -17,7 +17,8 @@
 
     <dependency>
       <groupId>com.saga</groupId>
-      <artifactId>core-infrastructure</artifactId>
+      <artifactId>core-microservice-infrastructure</artifactId>
+      <version>${core.microservice.infrastructure.version}</version>
     </dependency>
 
     <dependency>

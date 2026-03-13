@@ -1,0 +1,3 @@
+com.microservice.infrastructure.idempotency.config.IdempotencyAutoConfiguration
+com.microservice.infrastructure.idempotency.WebInfraAutoConfiguration
+com.microservice.infrastructure.outbox.config.OutboxAutoConfiguration
