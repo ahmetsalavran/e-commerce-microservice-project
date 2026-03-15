@@ -1,4 +1,4 @@
-package com.ars.core.infrastructure.persistence;
+package com.ars.contract.core;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
@@ -44,3 +44,4 @@ public abstract class BaseEntity {
         this.updatedAt = updatedAt;
     }
 }
+

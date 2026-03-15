@@ -1,9 +1,9 @@
 package com.ars.order.messaging.publishers;
 
 import com.ars.contract.messaging.Topics;
-import com.ars.core.infrastructure.outbox.messaging.OutboxJob;
-import com.ars.core.infrastructure.outbox.repo.OutboxEventRepository;
-import com.ars.core.infrastructure.outbox.runtime.OutboxJobPublisher;
+import com.ms.core.infrastructure.outbox.messaging.OutboxJob;
+import com.ms.core.infrastructure.outbox.repo.OutboxEventRepository;
+import com.ms.core.infrastructure.outbox.runtime.OutboxJobPublisher;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

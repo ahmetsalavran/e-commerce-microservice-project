@@ -3,7 +3,7 @@ package com.ars.user.service.impl;
 import com.ars.contract.strategy.InventoryStrategy;
 import com.ars.contract.strategy.PaymentStrategy;
 import com.ars.contract.user.UserStrategyPreferenceResponse;
-import com.ars.core.infrastructure.web.error.NotFoundException;
+import com.ms.core.infrastructure.web.error.NotFoundException;
 import com.ars.user.entity.UserProfile;
 import com.ars.user.repository.UserProfileRepository;
 import com.ars.user.service.UserProfileService;

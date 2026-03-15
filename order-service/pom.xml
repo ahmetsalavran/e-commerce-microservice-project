@@ -11,7 +11,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.saga</groupId>
+      <groupId>com.ms</groupId>
       <artifactId>core-infrastructure</artifactId>
     </dependency>
     <dependency>

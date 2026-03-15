@@ -1,11 +1,11 @@
 package com.ars.inventory.services.impl;
 
-import com.ars.core.infrastructure.idempotency.repo.ProcessedEventRepository;
-import com.ars.core.infrastructure.outbox.entity.OutboxEvent;
-import com.ars.core.infrastructure.outbox.messaging.OutboxCreatedEvent;
-import com.ars.core.infrastructure.outbox.service.OutboxEventService;
-import com.ars.core.infrastructure.tx.AfterCommitExecutor;
-import com.ars.core.infrastructure.web.error.InternalServerException;
+import com.ms.core.infrastructure.idempotency.repo.ProcessedEventRepository;
+import com.ms.core.infrastructure.outbox.entity.OutboxEvent;
+import com.ms.core.infrastructure.outbox.messaging.OutboxCreatedEvent;
+import com.ms.core.infrastructure.outbox.service.OutboxEventService;
+import com.ms.core.infrastructure.tx.AfterCommitExecutor;
+import com.ms.core.infrastructure.web.error.InternalServerException;
 import com.ars.contract.catalog.GetProductPricesRequest;
 import com.ars.contract.messaging.events.OrderConfirmedEvent;
 import com.ars.contract.messaging.events.PaymentChargeRequestedEvent;
@@ -25,8 +25,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ars.core.infrastructure.idempotency.annotation.Idempotent;
-import com.ars.core.infrastructure.idempotency.context.IdempotencyContext;
+import com.ms.core.infrastructure.idempotency.annotation.Idempotent;
+import com.ms.core.infrastructure.idempotency.context.IdempotencyContext;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;

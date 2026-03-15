@@ -2,8 +2,8 @@ package com.ars.order.service.impl;
 
 import com.ars.contract.messaging.events.OrderItemDto;
 import com.ars.contract.user.UserStrategyPreferenceResponse;
-import com.ars.core.infrastructure.web.error.BadRequestException;
-import com.ars.core.infrastructure.web.error.NotFoundException;
+import com.ms.core.infrastructure.web.error.BadRequestException;
+import com.ms.core.infrastructure.web.error.NotFoundException;
 import com.ars.order.client.UserClient;
 import com.ars.order.models.entities.*;
 import com.ars.order.models.enums.CancelReason;

@@ -26,7 +26,6 @@
 
     <modules>
         <module>common-contract</module>
-        <module>core-infrastructure</module>
         <module>product-listing-service</module>
         <module>order-service</module>
         <module>inventory-service</module>
@@ -45,7 +44,7 @@
             </dependency>
 
             <dependency>
-                <groupId>com.saga</groupId>
+                <groupId>com.ms</groupId>
                 <artifactId>core-infrastructure</artifactId>
                 <version>${project.version}</version>
             </dependency>
