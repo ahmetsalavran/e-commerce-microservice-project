@@ -1,9 +1,7 @@
 package com.ars.order;
 
-import com.ms.core.infrastructure.idempotency.entity.ProcessedEvent;
-import com.ms.core.infrastructure.idempotency.repo.ProcessedEventRepository;
-import com.ms.core.infrastructure.outbox.entity.OutboxEvent;
-import com.ms.core.infrastructure.outbox.repo.OutboxEventRepository;
+import com.ms.core.infrastructure.persistence.InfrastructureEntitiesMarker;
+import com.ms.core.infrastructure.persistence.InfrastructureRepositoriesMarker;
 import com.ars.order.models.entities.OrderItem;
 import com.ars.order.models.entities.OrdersCart;
 import com.ars.order.repository.OrderItemRepository;
@@ -19,14 +17,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackageClasses = {
         OrdersCart.class,
         OrderItem.class,
-        OutboxEvent.class,
-        ProcessedEvent.class
+        InfrastructureEntitiesMarker.class
 })
 @EnableJpaRepositories(basePackageClasses = {
         OrderRepository.class,
         OrderItemRepository.class,
-        OutboxEventRepository.class,
-        ProcessedEventRepository.class
+        InfrastructureRepositoriesMarker.class
 })
 public class OrderApplication {
   public static void main(String[] args) {

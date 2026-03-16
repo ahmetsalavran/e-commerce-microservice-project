@@ -1,7 +1,7 @@
 package com.ars.payment;
 
-import com.ms.core.infrastructure.idempotency.entity.ProcessedEvent;
-import com.ms.core.infrastructure.idempotency.repo.ProcessedEventRepository;
+import com.ms.core.infrastructure.persistence.InfrastructureEntitiesMarker;
+import com.ms.core.infrastructure.persistence.InfrastructureRepositoriesMarker;
 import com.ars.payment.entity.PaymentAccountEvent;
 import com.ars.payment.repository.PaymentAccountEventRepository;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
@@ -17,12 +17,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableSchedulerLock(defaultLockAtMostFor = "${app.payment.cleanup.lock-at-most-for:PT30M}")
 @EnableJpaRepositories(basePackageClasses = {
-        ProcessedEventRepository.class,
-        PaymentAccountEventRepository.class
+        PaymentAccountEventRepository.class,
+        InfrastructureRepositoriesMarker.class
 })
 @EntityScan(basePackageClasses = {
-        ProcessedEvent.class,
-        PaymentAccountEvent.class
+        PaymentAccountEvent.class,
+        InfrastructureEntitiesMarker.class
 })
 public class PaymentApplication {
   public static void main(String[] args) {
