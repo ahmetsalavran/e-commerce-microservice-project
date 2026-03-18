@@ -33,3 +33,17 @@ CREATE TABLE IF NOT EXISTS user_order_info (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+INSERT INTO user_profile (
+  customer_id,
+  first_name,
+  last_name,
+  email,
+  phone,
+  inventory_strategy,
+  payment_strategy
+) VALUES
+  (1001, 'Ali', 'Yilmaz', 'ali.yilmaz@example.com', '+905551111111', 'ALL_OR_NOTHING', 'THIRD_PARTY_THEN_LOCAL'),
+  (1002, 'Ayse', 'Demir', 'ayse.demir@example.com', '+905552222222', 'PARTITIONED_BEST_EFFORT', 'LOCAL_ONLY'),
+  (1003, 'Mehmet', 'Kaya', 'mehmet.kaya@example.com', '+905553333333', 'ALL_OR_NOTHING', 'THIRD_PARTY_ONLY')
+ON CONFLICT (customer_id) DO NOTHING;
